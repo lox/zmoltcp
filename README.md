@@ -20,10 +20,8 @@ RPL, IPsec ESP/AH wire formats.
 Supported mediums: Ethernet (Layer 2), raw IP (Layer 3, TUN/PPP),
 IEEE 802.15.4 (constrained IoT).
 
-Primary consumer: [Laminae](https://github.com/hotschmoe/laminae), a
-container-native research kernel for ARM64. But zmoltcp has no kernel
-dependencies -- it is a pure protocol library that any freestanding Zig
-project can use.
+zmoltcp has no kernel dependencies -- it is a pure protocol library that any
+freestanding Zig project can use.
 
 ## Development Philosophy
 
@@ -119,22 +117,8 @@ src/
   root.zig               Library entry point (public API)
 ```
 
-examples/                  End-to-end integration demos (zig build demo)
-  loopback_echo.zig      TCP echo on single stack (loopback device)
-  back_to_back.zig       TCP transfer between two stacks (simulated wire)
-  udp_icmp.zig           UDP exchange + ICMP ping (two stacks)
-  ipv6_echo.zig          IPv6 TCP echo + ICMPv6 ping with NDP
-  fault_tolerant.zig     TCP over lossy link (FaultInjector, 10% drop)
-  ip_medium.zig          UDP echo over Medium::Ip (no Ethernet)
-  fragmentation.zig      IPv4 fragmentation/reassembly (600B over 576 MTU)
-  multi_socket.zig       TCP+UDP+ICMP concurrent on same stacks
-  raw_socket.zig         Raw IP socket (protocol 253, custom payload)
-  dual_stack.zig         IPv4 TCP + IPv6 UDP concurrent on dual-stack
-  dns_resolve.zig        DNS A-record resolution (client + mock server)
-  phy_middleware.zig     Tracer + PcapWriter PHY middleware composition
-  dhcp_client.zig        Full DHCP lifecycle (DISCOVER/OFFER/REQUEST/ACK)
-  sixlowpan.zig          UDP over 6LoWPAN/IEEE 802.15.4
-```
+See the [Integration Demos](#integration-demos) section for the full list of
+end-to-end example programs under `examples/`.
 
 ## Building
 
@@ -224,27 +208,6 @@ const zmoltcp_dep = b.dependency("zmoltcp", .{
     .optimize = optimize,
 });
 exe.root_module.addImport("zmoltcp", zmoltcp_dep.module("zmoltcp"));
-```
-
-## Integration with Laminae
-
-In Laminae, zmoltcp is consumed as a package. The kernel-specific glue
-(ICC message dispatch, shared memory with the NIC driver, event loop) lives
-in `laminae/user/programs/zmoltcp/` and is roughly 200 lines of code. The
-protocol logic -- TCP state machines, checksums, neighbor tables, everything
-that makes networking work -- lives here.
-
-```
-Laminae container (main.zig, netif.zig)    <-- kernel-specific, ~200 LOC
-  |
-  imports zmoltcp                          <-- this repo, ~31,000 LOC
-  |
-  zmoltcp.stack.poll(timestamp)
-  |
-  +-- wire/ parse incoming packets
-  +-- socket/ drive state machines
-  +-- iface route to correct socket
-  +-- return next poll time
 ```
 
 ## Binary Size
