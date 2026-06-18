@@ -2,7 +2,7 @@
 
 Tracks zmoltcp tests against their smoltcp reference implementations.
 
-**Total: 858 tests passing** (857 named + 1 root import test)
+**Total: 860 tests passing** (859 named + 1 root import test)
 
 ## Summary
 
@@ -49,8 +49,8 @@ Tracks zmoltcp tests against their smoltcp reference implementations.
 | wire/sixlowpan_frag | 0 | 9 | 0 | 9 | PASS |
 | wire/rpl | 0 | 19 | 0 | 19 | PASS |
 | rpl | 0 | 26 | 0 | 26 | PASS |
-| stack | 2 | 119 | 0 | 119 | PASS |
-| **Total** | | **838** | **8** | **838** | **PASS** |
+| stack | 2 | 121 | 0 | 121 | PASS |
+| **Total** | | **840** | **8** | **840** | **PASS** |
 
 ## Wire Layer Tests
 
@@ -1016,7 +1016,9 @@ were never actually run despite being listed here. The test module runs with
 | (original) | "SLAAC-derived address uses EUI-64" | PASS |
 | (original) | "RA without addrconf flag does not add address" | PASS |
 | (original) | "prefix expiry removes SLAAC state" | PASS |
+| (original) | "RA processing: zero valid lifetime withdraws SLAAC address" | PASS |
 | (original) | "router lifetime expiry removes default route" | PASS |
+| (original) | "RA processing: zero router lifetime withdraws default route" | PASS |
 | (original) | "full SLAAC flow: enable -> RS -> RA -> address configured" | PASS |
 | (original) | "SLAAC pollAt returns next_rs_at when soliciting" | PASS |
 | (original) | "SLAAC disabled by default" | PASS |
