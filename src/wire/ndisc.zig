@@ -197,6 +197,13 @@ fn parseOptions(
     }
 }
 
+fn emitOption(repr: ndiscoption.Repr, buf: []u8) error{BufferTooSmall}!usize {
+    return ndiscoption.emit(repr, buf) catch |err| switch (err) {
+        error.BufferTooSmall => error.BufferTooSmall,
+        error.BadLength => unreachable,
+    };
+}
+
 pub fn emit(repr: Repr, buf: []u8) error{BufferTooSmall}!usize {
     const len = bufferLen(repr);
     if (buf.len < len) return error.BufferTooSmall;
@@ -205,7 +212,7 @@ pub fn emit(repr: Repr, buf: []u8) error{BufferTooSmall}!usize {
         .router_solicit => |rs| {
             @memset(buf[0..4], 0); // reserved
             if (rs.lladdr) |addr| {
-                _ = try ndiscoption.emit(.{ .source_link_layer_addr = addr }, buf[4..]);
+                _ = try emitOption(.{ .source_link_layer_addr = addr }, buf[4..]);
             }
         },
         .router_advert => |ra| {
@@ -219,20 +226,20 @@ pub fn emit(repr: Repr, buf: []u8) error{BufferTooSmall}!usize {
             writeU32(buf[8..12], ra.retrans_time);
             var pos: usize = 12;
             if (ra.lladdr) |addr| {
-                pos += try ndiscoption.emit(.{ .source_link_layer_addr = addr }, buf[pos..]);
+                pos += try emitOption(.{ .source_link_layer_addr = addr }, buf[pos..]);
             }
             if (ra.mtu) |val| {
-                pos += try ndiscoption.emit(.{ .mtu = val }, buf[pos..]);
+                pos += try emitOption(.{ .mtu = val }, buf[pos..]);
             }
             if (ra.prefix_info) |pi| {
-                pos += try ndiscoption.emit(.{ .prefix_information = pi }, buf[pos..]);
+                pos += try emitOption(.{ .prefix_information = pi }, buf[pos..]);
             }
         },
         .neighbor_solicit => |ns| {
             @memset(buf[0..4], 0); // reserved
             @memcpy(buf[4..20], &ns.target_addr);
             if (ns.lladdr) |addr| {
-                _ = try ndiscoption.emit(.{ .source_link_layer_addr = addr }, buf[20..]);
+                _ = try emitOption(.{ .source_link_layer_addr = addr }, buf[20..]);
             }
         },
         .neighbor_advert => |na| {
@@ -244,7 +251,7 @@ pub fn emit(repr: Repr, buf: []u8) error{BufferTooSmall}!usize {
             @memset(buf[1..4], 0); // reserved
             @memcpy(buf[4..20], &na.target_addr);
             if (na.lladdr) |addr| {
-                _ = try ndiscoption.emit(.{ .target_link_layer_addr = addr }, buf[20..]);
+                _ = try emitOption(.{ .target_link_layer_addr = addr }, buf[20..]);
             }
         },
         .redirect => |rd| {
@@ -252,7 +259,7 @@ pub fn emit(repr: Repr, buf: []u8) error{BufferTooSmall}!usize {
             @memcpy(buf[4..20], &rd.target_addr);
             @memcpy(buf[20..36], &rd.dest_addr);
             if (rd.lladdr) |addr| {
-                _ = try ndiscoption.emit(.{ .source_link_layer_addr = addr }, buf[36..]);
+                _ = try emitOption(.{ .source_link_layer_addr = addr }, buf[36..]);
             }
         },
     }

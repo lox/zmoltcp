@@ -2,7 +2,7 @@
 
 Tracks zmoltcp tests against their smoltcp reference implementations.
 
-**Total: 840 tests passing** (839 named + 1 root import test)
+**Total: 841 tests passing** (840 named + 1 root import test)
 
 ## Summary
 
@@ -37,7 +37,7 @@ Tracks zmoltcp tests against their smoltcp reference implementations.
 | wire/ipv6fragment | 3 | 4 | 0 | 4 | PASS |
 | wire/ipv6routing | 3 | 4 | 0 | 4 | PASS |
 | wire/ipv6hbh | 2 | 4 | 0 | 4 | PASS |
-| wire/ndiscoption | 5 | 8 | 0 | 8 | PASS |
+| wire/ndiscoption | 5 | 9 | 0 | 9 | PASS |
 | wire/ndisc | 2 | 4 | 0 | 4 | PASS |
 | wire/mld | 2 | 6 | 0 | 6 | PASS |
 | wire/icmpv6 | 6 | 9 | 0 | 9 | PASS |
@@ -50,7 +50,7 @@ Tracks zmoltcp tests against their smoltcp reference implementations.
 | wire/rpl | 0 | 19 | 0 | 19 | PASS |
 | rpl | 0 | 26 | 0 | 26 | PASS |
 | stack | 2 | 114 | 0 | 114 | PASS |
-| **Total** | | **820** | **8** | **820** | **PASS** |
+| **Total** | | **821** | **8** | **821** | **PASS** |
 
 ## Wire Layer Tests
 
@@ -299,6 +299,7 @@ Tracks zmoltcp tests against their smoltcp reference implementations.
 | (original) | "parse length zero is error" | PASS |
 | (original) | "optionLen basic" | PASS |
 | wire/ndiscoption.rs:test_construct_prefix_info | "prefix information roundtrip" | PASS |
+| (original) | "unknown option emit rejects inconsistent length" | PASS |
 
 ### wire/ndisc.zig
 | smoltcp Reference | zmoltcp Test | Status |
