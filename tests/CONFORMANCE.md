@@ -2,7 +2,8 @@
 
 Tracks zmoltcp tests against their smoltcp reference implementations.
 
-**Total: 877 tests passing** (876 named + 1 root import test)
+**Total: 877 deterministic tests passing** (876 named + 1 root import test),
+plus 11 fuzz target smoke tests tracked in `tests/FUZZING.md`.
 
 ## Summary
 
