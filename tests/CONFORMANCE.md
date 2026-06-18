@@ -2,7 +2,7 @@
 
 Tracks zmoltcp tests against their smoltcp reference implementations.
 
-**Total: 825 tests passing** (824 named + 1 root import test)
+**Total: 834 tests passing** (833 named + 1 root import test)
 
 ## Summary
 
@@ -14,7 +14,7 @@ Tracks zmoltcp tests against their smoltcp reference implementations.
 | wire/ip | 0 | 7 | 0 | 7 | PASS |
 | wire/ipv4 | 15 | 16 | 0 | 16 | PASS |
 | wire/tcp | 9 | 22 | 0 | 22 | PASS |
-| wire/udp | 8 | 11 | 0 | 11 | PASS |
+| wire/udp | 8 | 16 | 0 | 16 | PASS |
 | wire/icmp | 5 | 5 | 0 | 5 | PASS |
 | wire/ipsec_esp | 6 | 6 | 0 | 6 | PASS |
 | wire/ipsec_ah | 6 | 6 | 0 | 6 | PASS |
@@ -146,13 +146,18 @@ Tracks zmoltcp tests against their smoltcp reference implementations.
 | (original) | "parse UDP truncated" | PASS |
 | wire/udp.rs:roundtrip | "UDP roundtrip" | PASS |
 | (original) | "UDP payload extraction" | PASS |
+| (original) | "UDP payload clamps trailing padding" | PASS |
+| (original) | "UDP payload rejects over-declared length" | PASS |
 | wire/udp.rs:test_deconstruct | "UDP deconstruct raw fields" | PASS |
 | wire/udp.rs:test_construct | "UDP construct with checksum" | PASS |
 | wire/udp.rs:test_zero_checksum | "UDP zero checksum becomes 0xFFFF" | PASS |
 | wire/udp.rs:test_no_checksum | "UDP disabled checksum passes verify" | PASS |
+| (original) | "UDP checksum verifies declared length with trailing padding" | PASS |
+| (original) | "UDP checksum rejects over-declared length" | PASS |
 | (original) | "UDP v6 checksum roundtrip" | PASS |
 | (original) | "UDP v6 zero checksum is forbidden" | PASS |
 | (original) | "UDP v6 fillChecksum avoids zero" | PASS |
+| (original) | "UDP v6 checksum rejects over-declared length" | PASS |
 
 ### wire/icmp.zig
 | smoltcp Reference | zmoltcp Test | Status |
