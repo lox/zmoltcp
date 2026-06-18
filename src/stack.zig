@@ -4800,6 +4800,13 @@ fn buildRaFrame(
     return buildIpv6FrameFrom(buf, ROUTER_V6, ipv6.LINK_LOCAL_ALL_NODES, .icmpv6, 255, icmp_buf[0..icmp_len]);
 }
 
+fn slaacAddrForPrefix(prefix: ipv6.Address) ipv6.Address {
+    const iid = iface_mod.Interface.eui64InterfaceId(LOCAL_HW);
+    var addr: ipv6.Address = prefix;
+    @memcpy(addr[8..16], &iid);
+    return addr;
+}
+
 test "enableSlaac configures link-local address from MAC" {
     var iface = iface_mod.Interface.init(LOCAL_HW);
     iface.enableSlaac();
@@ -4967,6 +4974,8 @@ test "RA without addrconf flag does not add address" {
 test "prefix expiry removes SLAAC state" {
     var device = TestDevice.init();
     var stack = testStackSlaac();
+    const expected_addr = slaacAddrForPrefix(TEST_PREFIX);
+    const expected_sn = ipv6.solicitedNode(expected_addr);
 
     _ = stack.poll(Instant.ZERO, &device);
     while (device.dequeueTx()) |_| {}
@@ -4978,6 +4987,8 @@ test "prefix expiry removes SLAAC state" {
 
     _ = stack.poll(Instant.ZERO.add(time.Duration.fromSecs(1)), &device);
     try testing.expectEqual(stack.iface.slaac.?.phase, .configured);
+    try testing.expect(stack.iface.v6.hasIpAddr(expected_addr));
+    try testing.expect(stack.iface.hasMulticastGroupV6(expected_sn));
     while (device.dequeueTx()) |_| {}
 
     // Advance past valid_lifetime (> 11s from now=1)
@@ -4989,8 +5000,41 @@ test "prefix expiry removes SLAAC state" {
         if (slot != null) any_prefix = true;
     }
     try testing.expect(!any_prefix);
+    try testing.expect(!stack.iface.v6.hasIpAddr(expected_addr));
+    // The SLAAC global and link-local addresses share the same solicited-node group.
+    try testing.expect(stack.iface.hasSolicitedNode(expected_sn));
+    try testing.expect(stack.iface.hasMulticastGroupV6(expected_sn));
+    try testing.expect(stack.iface.linkLocalIpv6Addr() != null);
     // Should transition back to soliciting
     try testing.expectEqual(stack.iface.slaac.?.phase, .soliciting);
+}
+
+test "RA processing: zero valid lifetime withdraws SLAAC address" {
+    var device = TestDevice.init();
+    var stack = testStackSlaac();
+    const expected_addr = slaacAddrForPrefix(TEST_PREFIX);
+    const expected_sn = ipv6.solicitedNode(expected_addr);
+
+    _ = stack.poll(Instant.ZERO, &device);
+    while (device.dequeueTx()) |_| {}
+
+    var ra_buf: [512]u8 = undefined;
+    device.enqueueRx(buildRaFrame(&ra_buf, 1800, TEST_PREFIX, 64, 86400, 3600, true));
+    _ = stack.poll(Instant.ZERO.add(time.Duration.fromSecs(1)), &device);
+    try testing.expect(stack.iface.v6.hasIpAddr(expected_addr));
+    try testing.expect(stack.iface.hasMulticastGroupV6(expected_sn));
+    while (device.dequeueTx()) |_| {}
+
+    var withdraw_buf: [512]u8 = undefined;
+    device.enqueueRx(buildRaFrame(&withdraw_buf, 1800, TEST_PREFIX, 64, 0, 0, true));
+    _ = stack.poll(Instant.ZERO.add(time.Duration.fromSecs(2)), &device);
+
+    try testing.expect(!stack.iface.v6.hasIpAddr(expected_addr));
+    // The SLAAC global and link-local addresses share the same solicited-node group.
+    try testing.expect(stack.iface.hasSolicitedNode(expected_sn));
+    try testing.expect(stack.iface.hasMulticastGroupV6(expected_sn));
+    try testing.expectEqual(stack.iface.slaac.?.phase, .soliciting);
+    try testing.expect(stack.iface.linkLocalIpv6Addr() != null);
 }
 
 test "router lifetime expiry removes default route" {
@@ -5012,6 +5056,31 @@ test "router lifetime expiry removes default route" {
     // Advance past router_lifetime (> 6s from t=1 where RA was processed)
     _ = stack.poll(Instant.ZERO.add(time.Duration.fromSecs(7)), &device);
     try testing.expectEqual(@as(?ipv6.Address, null), stack.iface.slaac.?.default_router);
+}
+
+test "RA processing: zero router lifetime withdraws default route" {
+    var device = TestDevice.init();
+    var stack = testStackSlaac();
+    const expected_addr = slaacAddrForPrefix(TEST_PREFIX);
+
+    _ = stack.poll(Instant.ZERO, &device);
+    while (device.dequeueTx()) |_| {}
+
+    var ra_buf: [512]u8 = undefined;
+    device.enqueueRx(buildRaFrame(&ra_buf, 1800, TEST_PREFIX, 64, 86400, 3600, true));
+    _ = stack.poll(Instant.ZERO.add(time.Duration.fromSecs(1)), &device);
+    try testing.expectEqual(ROUTER_V6, stack.iface.slaac.?.default_router.?);
+    try testing.expect(stack.iface.slaac.?.router_lifetime_until != null);
+    while (device.dequeueTx()) |_| {}
+
+    var withdraw_buf: [512]u8 = undefined;
+    device.enqueueRx(buildRaFrame(&withdraw_buf, 0, TEST_PREFIX, 64, 86400, 3600, true));
+    _ = stack.poll(Instant.ZERO.add(time.Duration.fromSecs(2)), &device);
+
+    try testing.expectEqual(@as(?ipv6.Address, null), stack.iface.slaac.?.default_router);
+    try testing.expectEqual(@as(?Instant, null), stack.iface.slaac.?.router_lifetime_until);
+    try testing.expect(stack.iface.v6.hasIpAddr(expected_addr));
+    try testing.expectEqual(stack.iface.slaac.?.phase, .configured);
 }
 
 test "full SLAAC flow: enable -> RS -> RA -> address configured" {
