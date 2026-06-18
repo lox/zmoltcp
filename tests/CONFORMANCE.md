@@ -2,7 +2,7 @@
 
 Tracks zmoltcp tests against their smoltcp reference implementations.
 
-**Total: 871 tests passing** (870 named + 1 root import test)
+**Total: 873 tests passing** (872 named + 1 root import test)
 
 ## Summary
 
@@ -22,7 +22,7 @@ Tracks zmoltcp tests against their smoltcp reference implementations.
 | storage/assembler | 38 | 37 | 1 | 37 | PASS |
 | storage/packet_buffer | 10 | 12 | 0 | 12 | PASS |
 | time | 10 | 8 | 2 | 8 | PASS |
-| socket/tcp | 175 | 222 | 3 | 222 | PASS |
+| socket/tcp | 175 | 224 | 3 | 224 | PASS |
 | socket/udp | 16 | 17 | 0 | 17 | PASS |
 | wire/dhcp | 9 | 9 | 0 | 9 | PASS |
 | socket/dhcp | 11 | 16 | 0 | 16 | PASS |
@@ -50,7 +50,7 @@ Tracks zmoltcp tests against their smoltcp reference implementations.
 | wire/rpl | 0 | 19 | 0 | 19 | PASS |
 | rpl | 0 | 26 | 0 | 26 | PASS |
 | stack | 2 | 121 | 0 | 121 | PASS |
-| **Total** | | **851** | **8** | **851** | **PASS** |
+| **Total** | | **853** | **8** | **853** | **PASS** |
 
 ## Wire Layer Tests
 
@@ -591,6 +591,8 @@ were never actually run despite being listed here. The test module runs with
 | test_syn_sent_syn_ack_not_incremented | "SYN-SENT rejects SYN\|ACK with un-incremented ACK" | PASS |
 | test_connect_twice | "connect twice fails" | PASS |
 | test_connect_validation | "connect validation" | PASS |
+| (original) | "connect advances initial sequence numbers" | PASS |
+| (original) | "listen initial sequence numbers are tuple keyed" | PASS |
 | test_established_recv | "ESTABLISHED recv data" | PASS |
 | test_established_send | "ESTABLISHED send data" | PASS |
 | test_established_send_recv | "ESTABLISHED send and receive" | PASS |
