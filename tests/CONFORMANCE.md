@@ -2,7 +2,7 @@
 
 Tracks zmoltcp tests against their smoltcp reference implementations.
 
-**Total: 841 tests passing** (840 named + 1 root import test)
+**Total: 842 tests passing** (841 named + 1 root import test)
 
 ## Summary
 
@@ -38,7 +38,7 @@ Tracks zmoltcp tests against their smoltcp reference implementations.
 | wire/ipv6routing | 3 | 4 | 0 | 4 | PASS |
 | wire/ipv6hbh | 2 | 4 | 0 | 4 | PASS |
 | wire/ndiscoption | 5 | 9 | 0 | 9 | PASS |
-| wire/ndisc | 2 | 4 | 0 | 4 | PASS |
+| wire/ndisc | 2 | 5 | 0 | 5 | PASS |
 | wire/mld | 2 | 6 | 0 | 6 | PASS |
 | wire/icmpv6 | 6 | 9 | 0 | 9 | PASS |
 | iface | 24 | 62 | 1 | 62 | PASS |
@@ -50,7 +50,7 @@ Tracks zmoltcp tests against their smoltcp reference implementations.
 | wire/rpl | 0 | 19 | 0 | 19 | PASS |
 | rpl | 0 | 26 | 0 | 26 | PASS |
 | stack | 2 | 114 | 0 | 114 | PASS |
-| **Total** | | **821** | **8** | **821** | **PASS** |
+| **Total** | | **822** | **8** | **822** | **PASS** |
 
 ## Wire Layer Tests
 
@@ -308,6 +308,7 @@ Tracks zmoltcp tests against their smoltcp reference implementations.
 | (original) | "parse neighbor solicit" | PASS |
 | wire/ndisc.rs:test_router_advert_emit | "router advertisement roundtrip" | PASS |
 | (original) | "parse unrecognized NDP type" | PASS |
+| (original) | "parse rejects malformed option blocks" | PASS |
 
 ### wire/mld.zig
 | smoltcp Reference | zmoltcp Test | Status |
