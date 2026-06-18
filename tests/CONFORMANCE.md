@@ -2,7 +2,7 @@
 
 Tracks zmoltcp tests against their smoltcp reference implementations.
 
-**Total: 842 tests passing** (841 named + 1 root import test)
+**Total: 843 tests passing** (842 named + 1 root import test)
 
 ## Summary
 
@@ -39,7 +39,7 @@ Tracks zmoltcp tests against their smoltcp reference implementations.
 | wire/ipv6hbh | 2 | 4 | 0 | 4 | PASS |
 | wire/ndiscoption | 5 | 9 | 0 | 9 | PASS |
 | wire/ndisc | 2 | 5 | 0 | 5 | PASS |
-| wire/mld | 2 | 6 | 0 | 6 | PASS |
+| wire/mld | 2 | 7 | 0 | 7 | PASS |
 | wire/icmpv6 | 6 | 9 | 0 | 9 | PASS |
 | iface | 24 | 62 | 1 | 62 | PASS |
 | phy | 0 | 16 | 0 | 16 | PASS |
@@ -50,7 +50,7 @@ Tracks zmoltcp tests against their smoltcp reference implementations.
 | wire/rpl | 0 | 19 | 0 | 19 | PASS |
 | rpl | 0 | 26 | 0 | 26 | PASS |
 | stack | 2 | 114 | 0 | 114 | PASS |
-| **Total** | | **822** | **8** | **822** | **PASS** |
+| **Total** | | **823** | **8** | **823** | **PASS** |
 
 ## Wire Layer Tests
 
@@ -316,6 +316,7 @@ Tracks zmoltcp tests against their smoltcp reference implementations.
 | wire/mld.rs:test_query_deconstruct | "parse MLD query" | PASS |
 | wire/mld.rs:test_report_deconstruct | "parse MLD report" | PASS |
 | (original) | "parse MLD unrecognized type" | PASS |
+| (original) | "parse MLD rejects truncated variable fields" | PASS |
 | wire/mld.rs:test_query_construct | "MLD query roundtrip" | PASS |
 | wire/mld.rs:test_record_deconstruct | "parse address record" | PASS |
 | (original) | "address record roundtrip" | PASS |
