@@ -137,7 +137,7 @@ Zig version: 0.16.0
 
 ## Testing
 
-818 tests passing across all modules. Tests are transliterated from smoltcp's
+877 tests passing across all modules. Tests are transliterated from smoltcp's
 test suite where applicable (see SPEC.md for the conformance testing
 methodology and tests/CONFORMANCE.md for per-test tracking). The smoltcp
 source is included as a git submodule under `ref/smoltcp/` for reference.
