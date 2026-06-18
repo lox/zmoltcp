@@ -2,7 +2,7 @@
 
 Tracks zmoltcp tests against their smoltcp reference implementations.
 
-**Total: 843 tests passing** (842 named + 1 root import test)
+**Total: 844 tests passing** (843 named + 1 root import test)
 
 ## Summary
 
@@ -33,7 +33,7 @@ Tracks zmoltcp tests against their smoltcp reference implementations.
 | wire/igmp | 4 | 8 | 0 | 8 | PASS |
 | wire/ipv6 | 12 | 12 | 0 | 12 | PASS |
 | wire/ipv6option | 7 | 7 | 0 | 7 | PASS |
-| wire/ipv6ext_header | 3 | 5 | 0 | 5 | PASS |
+| wire/ipv6ext_header | 3 | 6 | 0 | 6 | PASS |
 | wire/ipv6fragment | 3 | 4 | 0 | 4 | PASS |
 | wire/ipv6routing | 3 | 4 | 0 | 4 | PASS |
 | wire/ipv6hbh | 2 | 4 | 0 | 4 | PASS |
@@ -50,7 +50,7 @@ Tracks zmoltcp tests against their smoltcp reference implementations.
 | wire/rpl | 0 | 19 | 0 | 19 | PASS |
 | rpl | 0 | 26 | 0 | 26 | PASS |
 | stack | 2 | 114 | 0 | 114 | PASS |
-| **Total** | | **823** | **8** | **823** | **PASS** |
+| **Total** | | **824** | **8** | **824** | **PASS** |
 
 ## Wire Layer Tests
 
@@ -263,6 +263,7 @@ Tracks zmoltcp tests against their smoltcp reference implementations.
 | wire/ipv6ext_header.rs:test_ext_header_deconstruct | "parse extension header with PadN(12)" | PASS |
 | wire/ipv6ext_header.rs:test_ext_header_construct | "extension header roundtrip" | PASS |
 | (original) | "parse truncated" | PASS |
+| (original) | "emit rejects data beyond encoded header length" | PASS |
 
 ### wire/ipv6fragment.zig
 | smoltcp Reference | zmoltcp Test | Status |
