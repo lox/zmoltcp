@@ -137,10 +137,12 @@ Zig version: 0.16.0
 
 ## Testing
 
-877 tests passing across all modules. Tests are transliterated from smoltcp's
-test suite where applicable (see SPEC.md for the conformance testing
-methodology and tests/CONFORMANCE.md for per-test tracking). The smoltcp
-source is included as a git submodule under `ref/smoltcp/` for reference.
+The host suite covers deterministic conformance tests, bounded fuzz target
+smoke tests, integration demos, and regression tests. Deterministic protocol
+tests are transliterated from smoltcp's test suite where applicable (see
+SPEC.md for the conformance testing methodology and tests/CONFORMANCE.md for
+per-test tracking). The smoltcp source is included as a git submodule under
+`ref/smoltcp/` for reference.
 
 **Tests are diagnostic tools, not success criteria.** A passing suite does not
 mean the code is good. A failing test does not mean the code is wrong. Tests
@@ -149,11 +151,17 @@ behavior -- but they are not a definition of correctness. The real metric is
 whether the code furthers the project's vision.
 
 ```bash
-# Run all unit tests
-zig build test
+# Run the full local validation suite with the pinned Zig toolchain
+mise run check
 
-# Run with verbose output
-zig build test -- --summary all
+# Run all unit tests
+mise run test
+
+# Run all demos
+mise run demo
+
+# Run a bounded native fuzz pass
+mise run fuzz
 ```
 
 ## Integration Demos
