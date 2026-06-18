@@ -2,7 +2,7 @@
 
 Tracks zmoltcp tests against their smoltcp reference implementations.
 
-**Total: 847 tests passing** (846 named + 1 root import test)
+**Total: 848 tests passing** (847 named + 1 root import test)
 
 ## Summary
 
@@ -15,7 +15,7 @@ Tracks zmoltcp tests against their smoltcp reference implementations.
 | wire/ipv4 | 15 | 16 | 0 | 16 | PASS |
 | wire/tcp | 9 | 22 | 0 | 22 | PASS |
 | wire/udp | 8 | 16 | 0 | 16 | PASS |
-| wire/icmp | 5 | 5 | 0 | 5 | PASS |
+| wire/icmp | 5 | 6 | 0 | 6 | PASS |
 | wire/ipsec_esp | 6 | 6 | 0 | 6 | PASS |
 | wire/ipsec_ah | 6 | 7 | 0 | 7 | PASS |
 | storage/ring_buffer | 15 | 14 | 1 | 14 | PASS |
@@ -50,7 +50,7 @@ Tracks zmoltcp tests against their smoltcp reference implementations.
 | wire/rpl | 0 | 19 | 0 | 19 | PASS |
 | rpl | 0 | 26 | 0 | 26 | PASS |
 | stack | 2 | 114 | 0 | 114 | PASS |
-| **Total** | | **827** | **8** | **827** | **PASS** |
+| **Total** | | **828** | **8** | **828** | **PASS** |
 
 ## Wire Layer Tests
 
@@ -168,6 +168,7 @@ Tracks zmoltcp tests against their smoltcp reference implementations.
 | wire/icmpv4.rs:test_parse_echo | "parse ICMP echo request" | PASS |
 | (original) | "parse ICMP dest unreachable" | PASS |
 | (original) | "ICMP echo emit with valid checksum" | PASS |
+| (original) | "ICMP parse rejects bad checksum" | PASS |
 | (original) | "ICMP echo roundtrip" | PASS |
 | wire/icmpv4.rs:test_check_len | "ICMP check length" | PASS |
 
