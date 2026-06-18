@@ -172,27 +172,23 @@ fn parseOptions(
     var offset: usize = 0;
     while (offset < options_data.len) {
         const remaining = options_data[offset..];
-        const opt_len = ndiscoption.optionLen(remaining) catch |err| switch (err) {
-            error.Truncated => break,
-            error.BadLength => return error.BadLength,
-        };
-        if (ndiscoption.parse(remaining)) |opt| {
-            switch (opt) {
-                .source_link_layer_addr => |addr| {
-                    if (src_lladdr) |out| out.* = addr;
-                },
-                .target_link_layer_addr => |addr| {
-                    if (target_lladdr) |out| out.* = addr;
-                },
-                .mtu => |val| {
-                    if (mtu_out) |out| out.* = val;
-                },
-                .prefix_information => |pi| {
-                    if (prefix_out) |out| out.* = pi;
-                },
-                .unknown => {},
-            }
-        } else |_| {}
+        const opt_len = try ndiscoption.optionLen(remaining);
+        const opt = try ndiscoption.parse(remaining);
+        switch (opt) {
+            .source_link_layer_addr => |addr| {
+                if (src_lladdr) |out| out.* = addr;
+            },
+            .target_link_layer_addr => |addr| {
+                if (target_lladdr) |out| out.* = addr;
+            },
+            .mtu => |val| {
+                if (mtu_out) |out| out.* = val;
+            },
+            .prefix_information => |pi| {
+                if (prefix_out) |out| out.* = pi;
+            },
+            .unknown => {},
+        }
         offset += opt_len;
     }
 }
@@ -325,4 +321,27 @@ test "router advertisement roundtrip" {
 
 test "parse unrecognized NDP type" {
     try testing.expectError(error.Unrecognized, parse(0x01, &[_]u8{ 0, 0, 0, 0 }));
+}
+
+test "parse rejects malformed option blocks" {
+    try testing.expectError(error.Truncated, parse(ROUTER_ADVERT, &[_]u8{
+        0x40, 0x80, 0x03, 0x84,
+        0x00, 0x00, 0x03, 0x84,
+        0x00, 0x00, 0x03, 0x84,
+        0x01, 0x01, 0x52, 0x54, 0x00, 0x12, 0x34, 0x56,
+        0x01,
+    }));
+
+    try testing.expectError(error.BadLength, parse(ROUTER_ADVERT, &[_]u8{
+        0x40, 0x80, 0x03, 0x84,
+        0x00, 0x00, 0x03, 0x84,
+        0x00, 0x00, 0x03, 0x84,
+        0x03, 0x03, 0x40, 0xc0,
+        0x00, 0x00, 0x03, 0x84,
+        0x00, 0x00, 0x03, 0xe8,
+        0x00, 0x00, 0x00, 0x00,
+        0xfe, 0x80, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00,
+    }));
 }
